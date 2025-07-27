@@ -1,4 +1,3 @@
-import org.gradle.util.VersionNumber
 
 plugins {
     id 'com.android.library'
@@ -6,14 +5,12 @@ plugins {
 }
 
 android {
-    compileSdk 34
+    compileSdk 35
     namespace "com.tencent.qcloud.tuikit.tuicallkit"
 
     defaultConfig {
-        versionName "3.2.0"
-        versionCode 1
-        minSdkVersion 19
-        targetSdkVersion 34
+        minSdkVersion 21
+        targetSdkVersion 35
     }
 
     buildTypes {
@@ -23,11 +20,7 @@ android {
         }
     }
 
-    def callSourceJavaVersion = JavaVersion.VERSION_1_8
-    VersionNumber currentGradleVersion = VersionNumber.parse(gradle.gradleVersion)
-    if (currentGradleVersion.major >= 8) {
-        callSourceJavaVersion = JavaVersion.VERSION_17
-    }
+    def callSourceJavaVersion = JavaVersion.VERSION_24
 
     compileOptions {
         sourceCompatibility callSourceJavaVersion
@@ -35,14 +28,20 @@ android {
     }
 }
 
+// Add this block at the top level of your build.gradle file
+// (outside the android block)
+kotlin {
+    jvmToolchain(24) // Or your desired Java version, as an integer
+}
+
 dependencies {
     api fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
 
-    api 'androidx.appcompat:appcompat:1.3.1'
-    api 'com.google.android.material:material:1.4.0'
-    api 'androidx.recyclerview:recyclerview:1.2.1'
-    api 'androidx.constraintlayout:constraintlayout:2.1.4'
-    api "com.google.code.gson:gson:2.9.1"
+    api 'androidx.appcompat:appcompat:1.7.1'
+    api 'com.google.android.material:material:1.12.0'
+    api 'androidx.recyclerview:recyclerview:1.4.0'
+    api 'androidx.constraintlayout:constraintlayout:2.2.1'
+    api "com.google.code.gson:gson:2.13.1"
 
     def projects = this.rootProject.getAllprojects().stream().map { project -> project.name }.collect()
     if (projects.contains("tuicore")) {
@@ -60,6 +59,6 @@ dependencies {
     if (projects.contains("common")) {
         api project(':common')
     } else {
-        api 'io.trtc.uikit:common:3.2.+'
+        api 'io.trtc.uikit:common:3.2.0.1016'
     }
 }
